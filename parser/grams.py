@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import os, sys, glob, re
+import os, sys, glob, re, csv
 
 def getNgrams(input, n):
 	ngrams = []
@@ -18,13 +18,11 @@ def transform(attribute):
 	dict = {}
 
 	myfile = open('chi_crime_10k.csv', 'r')
-	lines = myfile.read().splitlines()
+	lines = csv.reader(myfile, delimiter=',')
 	
 	newfile = open('output.csv','w')
 	
-	aux = lines[0].split(',')
-	
-	aux = aux[:-1]
+	aux = next(lines)
 	
 	i = 0
 	for h in aux:
@@ -35,9 +33,9 @@ def transform(attribute):
 	
 	index = header[attribute]
 	
-	for l in range(1, len(lines)):
-		words = lines[l].split(',')
-		for w in range(0,len(words)-2):
+	for l in lines:
+		words = l
+		for w in range(0,len(words)):
 			if(w != index):
 				sub = re.sub('[\;\,\?\!\(\)\"]',' ', words[w])
 				s = sub.split(' ')
@@ -47,10 +45,13 @@ def transform(attribute):
 					else:
 						dict[a] = 1
 						
-	for l in range(1, len(lines)):
+	myfile.seek(0)
+	trash = next(lines)
+	
+	for l in lines:
 		result = []
-		words = lines[l].split(',')
-		for w in range(0,len(words)-2):
+		words = l
+		for w in range(0,len(words)):
 			total = 0
 			if(w != index):
 				if (words[w] == ''):

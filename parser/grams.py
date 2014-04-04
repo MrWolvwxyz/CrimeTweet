@@ -13,26 +13,57 @@ def getNgrams(input, n):
 		
 	return ngrams
 	
-def transform():
+def transform(attribute):
+	header = {}
+	dict = {}
+
 	myfile = open('chi_crime_10k.csv', 'r')
 	lines = myfile.read().splitlines()
 	
 	newfile = open('output.csv','w')
 	
-	aux = list(range(0, len(lines[0].split(','))-1))
+	aux = lines[0].split(',')
+	
+	aux = aux[:-1]
+	
+	i = 0
+	for h in aux:
+		header[h] = i
+		i = i + 1
+	
 	newfile.write(",".join(str(x) for x in aux) + '\n')
 	
-	for l in range(1, len(lines)-1):
+	index = header[attribute]
+	
+	for l in range(1, len(lines)):
+		words = lines[l].split(',')
+		for w in range(0,len(words)-2):
+			if(w != index):
+				sub = re.sub('[\;\,\?\!\(\)\"]',' ', words[w])
+				s = sub.split(' ')
+				for a in s:
+					if(a in dict):
+						dict[a] = dict[a] + 1
+					else:
+						dict[a] = 1
+						
+	for l in range(1, len(lines)):
 		result = []
 		words = lines[l].split(',')
-		for w in words:
-			if(not (re.match(".*\\d.*", w) or w=='false' or w=='true' or w=='')):
-				grams = getNgrams(w.lower(),2)
-				result.append(str(grams))
-			elif (w == ''):
-				result.append('None')
+		for w in range(0,len(words)-2):
+			total = 0
+			if(w != index):
+				if (words[w] == ''):
+					result.append('None')
+				else:
+					sub = re.sub('[\;\,\?\!\(\)\"]',' ', words[w])
+					s = sub.split(' ')
+					for a in s:
+						total = total + dict[a]
+						
+					result.append(str(total))
 			else:
-				result.append(str(w))
+				result.append(str(words[w]))
 				
 		newfile.write(",".join(result) + '\n')
 			

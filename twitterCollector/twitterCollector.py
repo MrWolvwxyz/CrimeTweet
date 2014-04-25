@@ -17,6 +17,12 @@ DELAY = 60
 jsonTweets = dict()
 textTweets = list()
 
+
+################output directories for collected tweets################
+# must end with a /
+outDir_full = 'TwitterData/Chicago/full_tweet/'
+outDir_text = 'TwitterData/Chicago/text_only/'
+
 class CustonStreamListener(tweepy.StreamListener):
   def __init__(self, api=None):
     self.api = api
@@ -64,8 +70,8 @@ def main():
     global jsonTweets
     global textTweets
     timestr = time.strftime('%Y%m%d-%H%M%S')
-    outFile = open('TwitterData/Chicago/full_tweet/' + timestr + '.txt', 'w+')
-    textOutfile = open('TwitterData/Chicago/text_only/' + timestr + '.txt', 'w+')
+    outFile = open(outDir_full + timestr + '.txt', 'w+')
+    textOutfile = open(outDir_text + timestr + '.txt', 'w+')
 
     noError = True
     while noError:
@@ -86,8 +92,8 @@ def main():
         jsonTweets = dict()
         textTweets = list()
         timestr = time.strftime('%Y%m%d-%H%M%S')
-        outFile = open('TwitterData/Chicago/full_tweet/' + timestr + '.txt', 'w+')
-        textOutfile = open('TwitterData/Chicago/text_only/' + timestr + '.txt', 'w+')
+        outFile = open(outDir_full + timestr + '.txt', 'w+')
+        textOutfile = open(outDir_text + timestr + '.txt', 'w+')
 
       except:
         print 'error: '
